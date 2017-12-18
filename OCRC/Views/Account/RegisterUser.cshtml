@@ -1,0 +1,60 @@
+﻿@model OCRC.Models.User
+@{
+    ViewBag.Title = "RegisterUser";
+}
+
+
+@using (Html.BeginForm("RegisterUser", "Account", FormMethod.Post))
+{ 
+<div class="col-xs-12 col-md-12">
+    <h3>Register New User</h3>
+    <form class="col-xs-12 col-md-4 col-md-offset-3">
+        <div class="form-group">
+           @Html.LabelFor(model => model.fname, new { htmlAttributes = new { @class = "control-label" } })
+           @Html.EditorFor(model => model.fname, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name" } })
+          
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.lname, new { htmlAttributes = new { @class = "control-label" } })
+            @Html.EditorFor(model => model.lname, new { htmlAttributes = new { @class = "form-control" , @placeholder ="Last Name"} })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.email, new { htmlAttributes = new { @class = "control-label" } })
+            @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control", @placeholder = "example@example.com" } })
+        </div>
+        <div class="form-group">
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(model => model.role[0], new { @class = "checkbox" }) Admin
+            </label>
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(model => model.role[1], new { @class = "checkbox"}) Clerk
+            </label>
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(model => model.role[2], new { @class = "checkbox" }) Coach
+            </label>
+            <label class="checkbox-inline">
+                @Html.CheckBoxFor(model => model.role[3], new { @class = "checkbox" }) School
+            </label>
+
+        </div>
+        <div class="form-group" id="teamSelector">
+            <label for="exampleInputEmail1">Team</label>
+            @Html.EditorFor(model => model.teamIdentifier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Team Name" } })
+        </div>
+        <div class="form-group" id="schoolSelector">
+            <label for="exampleInputEmail1">School</label>
+            @Html.EditorFor(model => model.schoolIdentifier, new { htmlAttributes = new { @class = "form-control", @placeholder = "School Name" } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.password, new { htmlAttributes = new { @class = "control-label" } })
+            @Html.EditorFor(model => model.password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+            
+        </div>
+        
+
+
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+}

@@ -1,0 +1,31 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+    Layout = "";
+}
+
+<head>
+    @Styles.Render("~/Content/bootstrap.min.css")
+    @Styles.Render("~/Content/Site.css")
+    @Html.Hidden("RedirectTo", Url.Action("Login", "Account"));
+</head>
+     @if (Request.IsAuthenticated)
+    {
+
+        Response.Redirect("~/HOME/Result");
+    }
+    else
+    {
+        Response.Redirect("~/Account/Login");
+    }
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/Login")
+
+
+
+
+
+
+

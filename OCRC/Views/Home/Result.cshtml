@@ -1,0 +1,401 @@
+@model OCRC.Models.SearchViewModel
+
+@{
+    ViewBag.Title = "Sport Search";
+}
+
+<script>
+
+
+
+    let arr = [];
+    function sportClicked() {
+        arr = [];
+
+        $("label[name=lblCB]").each(function (index) {
+            if ($('input')[index+6].checked) { //needs adjustment, instead of hardcoding a 4, find the index of the first label
+                arr.push($(this).text());
+            }
+        });
+        runFilter(); // handles the onchange event for checkboxes
+    }
+
+    $(function () { 
+
+        $('#ageFilter').on("change", runFilter);
+        $('#gradeFilter').on("change", runFilter);
+        $('#schoolInput').on('keyup change', runFilterAfterDelay);
+        $('#nameInput').on('keyup change', runFilterAfterDelay);
+        $('#yearInput').on('keyup change', runFilterAfterDelay);
+    });
+
+    var timeout = null;
+    function runFilterAfterDelay() {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(function () {
+            runFilter();
+        }, 500);
+    }
+
+    function getKidInfo(obj) {
+         $.ajax({
+                type: "POST",
+                url: '@Url.Action("getKidDataForModal")', 
+                data: {
+                    'kidId': Number(obj.children[0].innerHTML)
+                },
+                datatype: 'json',
+                cache: false,
+                success: (data) => {
+                    buildSearchModalBody(data.result); 
+                }
+
+        })
+            return false;
+    }
+
+
+    function runFilter() { //rename Id's to be self descriptive.
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("filterSearch")', //better action name
+                data: {
+                    'sport': arr,
+                    'age': $('#ageFilter')[0].options[$('#ageFilter')[0].selectedIndex].value,
+                    'grade': $('#gradeFilter')[0].options[$('#gradeFilter')[0].selectedIndex].value,
+                    'year': $('#yearInput').val(),
+                    'school': $('#schoolInput').val(),
+                    'name': $('#nameInput').val()
+
+                },
+                datatype: 'json',
+                cache: false,
+                success: (data) => {
+                    document.title = "changed";
+
+                    clearTableBody();
+                    data.result.forEach(buildTableBody);
+                    if (document.getElementById("SearchResults").innerHTML == "") { //temp message
+                        document.getElementById("SearchResults").innerHTML = " No Results Found ";
+                    }
+                }
+
+        })
+        return false;
+    }
+
+
+    function clearTableBody() {
+        document.getElementById("SearchResults").innerHTML = "";
+    }
+
+    function buildTableBody(searchItems) {
+        document.getElementById("SearchResults").innerHTML +=
+            "<tr data-toggle=\"modal\" data-target=\"#kidModal\" class=\"clickableRow\" onclick=\"getKidInfo(this)\">" +
+            "<td hidden>" + searchItems.id + "</td>" +
+            "<td>" + searchItems.fname + "</td>" +
+            "<td>" + searchItems.lname + "</td>" +
+            "<td>" + searchItems.year + "</td>" +
+            "<td>" + searchItems.rank[0].rank + "</td>" +
+            "<td>" + searchItems.age + "</td>" +
+            "<td>" + searchItems.school + "</td>" +
+            "<td>" + searchItems.grade + "</td>" +
+            "<td>" + searchItems.sport + "</td>" +
+            "</tr>";
+    }
+
+
+    function buildSearchModalBody(KidInfo) {
+        document.getElementById("searchModalBody").innerHTML = "<ul class=\"list-unstyled align-right\">" +
+            "<li class=\"modal-Text \">" +
+            "<input type=\"radio\" name=\"optradio\">Active " +
+            "<input type=\"radio\" name=\"optradio\"> Inactive</li>" +
+            "</ul> <br/>" +
+            "<ul class=\"list-unstyled \">" +
+            "<li class=\"modal-Text\"> Full Name:  <span>" + KidInfo.fname + " " + KidInfo.lname + "</span></li>" +
+            "<li class=\"modal-Text\"> Year:  <span>" + KidInfo.year + "</span></li>" +
+            "<li class=\"modal-Text\"> Grade: <span>" + KidInfo.grade + "</span></li>" +
+            "<li class=\"modal-Text\"> Age:   <span>" + KidInfo.age + "</span></li>" +
+            "<li class=\"modal-Text\"> Rank:  <span>" + KidInfo.rank[0].rank + "</span></li>" +
+            "<li class=\"modal-Text\"> School: <span>" + KidInfo.school + "</span></li>" +
+            "<li class=\"modal-Text\"> Sport: <span>" + KidInfo.sport + "</span></li>" +
+            "<li class=\"modal-Text\"> Note:</li>" +
+            "</ul> " +
+            "<textarea class=\"form-control\" rows= \"5\" id= \"comment\" ></textarea><br/>" + 
+            "<a class=\"btn btn-default\" href=\"#\" role=\"button\">Save</a>"
+            ;
+    }
+
+</script>
+
+
+
+
+<div class="navbar-header">
+    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span onclick="openNav()">Filter</span>
+
+    </button>
+</div>
+<br />
+<div class="collapse navbar-collapse">
+    <!-- search form -->
+    <div class="col-md-10 col-md-offset-2 ">
+        <form class="form-inline">
+            <div class="form-group ">
+                <label for="School" class="sr-only">School</label>
+                <input id="schoolInput" type="text" class="form-control" placeholder="School">
+            </div>
+            <div class="form-group">
+                <label for="Name" class="sr-only">Name</label>
+                <input id="nameInput" type="text" class="form-control" placeholder="Name">
+            </div>
+            <div class="form-group">
+                <label for="Year" class="sr-only">Year</label>
+                <input id="yearInput" type="text" class="form-control" placeholder="Year">
+            </div>
+           
+        </form>
+
+    </div>
+</div>
+<br />
+
+<div class="col-md-2 col-sm-2">
+
+    <div class="row collapse navbar-collapse">
+        <!-- filter start -->
+
+
+        <form>
+            <h3>Filter By Sport</h3>
+            <div id="sportsFilter">
+                @foreach (var item in Model.sports)
+                { //do no indent
+               <label  name="lblCB" class="checkbox"><input onclick="sportClicked()" name="@item.sportName" type="checkbox">@item.sportName</label>
+                }
+            </div>
+
+
+        </form>
+        <form class="row form-inline">
+
+            <h3>More Filter</h3>
+            <select id="gradeFilter" class="form-control">
+                <option value="0">Grade</option>
+                
+                @for (int i = 1; i < 13; i++)
+                {
+                    <option value="@i">@(i)th</option>
+                }
+            </select>
+
+            <select id="ageFilter" class="form-control">
+                <option value="0">Age</option>
+                @for (int i = 5; i < 19; i++)
+                {
+                    <option value="@i">@i</option>
+                }
+            </select>
+            <br />
+            <br />
+       
+
+        </form>
+    </div>
+
+</div>
+
+<div class="col-md-10 col-sm-10 col-xs-12">
+
+    <table class="table">
+        <thead>
+            <tr>
+
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Year</th>
+                <th scope="col">Rank</th>
+                <th scope="col">Age</th>
+                <th scope="col">School</th>
+                <th scope="col">Grade</th>
+                <th scope="col">Sport</th>
+                
+            </tr>
+        </thead>
+        <tbody id="SearchResults">
+
+      @foreach (var item in Model.allOfThem)
+      {
+          
+            <tr data-toggle="modal" data-target="#kidModal"  onclick="getKidInfo(this)" class="clickableRow">
+                <td hidden>@item.id</td>
+                <td>@item.fname</td>
+                <td>@item.lname</td>
+                <td>@item.year</td>
+                <td>@item.rank[0].rank</td>
+                <td>@item.age</td>
+                <td>@item.school</td>
+                <td>@item.grade</td>
+                <td>@item.sport</td>
+                
+
+            </tr>
+                        
+         }
+        </tbody>
+    </table>
+
+
+
+</div>
+
+
+<script>
+
+
+
+</script>
+
+<style>
+    .modal-content {
+        border-radius: 15px;
+  
+    }
+    .modal-header {
+        background-color: #647af1;
+        border-radius: 15px 15px 0 0;
+
+    }
+    .modal-body{
+        text-align:left;
+    }
+
+    .modal-footer {
+        border-radius: 0 0 15px 15px;
+    }
+
+    .modal-Text{
+        font-weight:bolder;
+    }
+
+    .modal-Text span {
+        font-weight: normal;
+    }
+
+    .clickableRow {
+        transition: all 0.3s ease 0s;
+    }
+    .clickableRow:nth-child(2n) {
+        background-color:#cdcdcd;
+    }
+   .clickableRow:hover{
+        background-color:#0094ff;
+    }
+    .clickableRow:active {
+        background-color: #0064ff;
+    }
+
+
+
+</style>
+
+
+<div class="modal fade" id="kidModal" role="dialog">
+    <div class="modal-dialog text-center">
+
+        <!-- Modal content-->
+        <div class="modal-content text-center">
+
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h4 style="color:aliceblue">Details</h4>
+            </div>
+
+            <div id="searchModalBody" class="modal-body">
+                                         
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<!--slide menu start-->
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    @Html.Partial("_SearchForm")
+    <div class="row">
+        <!-- filter start -->
+        <div class="col-md-12 col-xs-12">
+
+            <div class="col-xs-10">
+
+
+                <form>
+                    <h3>Filter By Sport</h3>
+                    @foreach (var item in Model.sports)
+                    {
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"> @item.sportName
+                            </label>
+                        </div>
+                    }
+
+
+
+
+
+                    <h3>More Filter</h3>
+                    <select class="form-control">
+                        <option value="Grade">Grade</option>
+
+                        @for (int i = 1; i < 14; i++)
+                        {
+                            <option value="@i">@i th</option>
+                        }
+                    </select>
+
+                    <select class="form-control">
+                        <option value="Age">Age</option>
+                        @for (int i = 5; i < 20; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                    <br />
+                    <br />
+                   
+
+ 
+
+
+                </form>
+            </div>
+
+
+
+        </div>
+
+    </div>
+
+</div>
+<!--slide menu end-->
+
+<script>
+    /* Set the width of the side navigation to 250px */
+    
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    /* Set the width of the side navigation to 0 */
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+

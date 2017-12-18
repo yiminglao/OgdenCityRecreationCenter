@@ -1,0 +1,47 @@
+10/30/2017
+Meeting with Ogden City
+Current registration site: https://parksandrecreation.ogdencity.com/ParksRec_Prod/Home#
+
+What info you want to store. What it will look like. How you want information accessed.
+
+Ogden City - 
+"We have sport registrations every year for all ages. We want a tracking system for these kids.
+We want to be able to import the data from the current system, and export the results to a readable file.
+We want to be able to search for a certain sport. We want a login verification for Ogden City employees and coaches(on a volunteer bases and get add notes and ranking to a kid).
+For the View of the system, we don't mind if it looks like what we already have or something new.
+Our current problem is that we are between systems right now.
+On open, we want to be able to filter by different sports and Individual properties.(image of this is in App_Data folder).
+Example: Johnny registered in 2016, but now Johnny isn't registered in 2017. This system allows us to know who's missing so
+we can contact those people to see if they're going to register for 2017."
+
+Current system is a third-party system that holds everyone that is registered, and when they registered.	
+
+Specifics that this system needs:
+Want to be able to rank the kids within the new system. -- Skill rank! (1-5)
+Notes - Explanation of what happened to the kid.
+Active or Inactive status to tell whether a student is currently registered for the year or not.
+
+Side Comments:
+If a kid wasn't there before, but is there now. If a kid was there before but not there now.
+
+*Needs:
+Access to the current system data. Direct access would be optimal.
+Desktop and Mobile friendly.
+
+Levels of Access:
+Admin(employees with editing and viewing access), sets active, sets ranks, sets notes.
+Clerk(employees with viewing access).
+Volunteer Coaches(coaches with viewing their current team and the ability to add content to a player), addes notes? and sets ranks for their team.
+School Coaches(viewing students?)
+
+Database ideas:
+Status-id, cid, kid, rank, active, note
+Kids-linked from the external database
+
+Developer Notes:
+Individuals jQuery OnInsert
+Sports
+
+Search School, Name, Year
+Repository class for the dummy data
+Sports, School, Grade, Name, Age

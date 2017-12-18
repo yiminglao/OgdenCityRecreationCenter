@@ -1,0 +1,6 @@
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\bin\Debug\Helpers.dll
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\bin\Debug\Helpers.pdb
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\obj\Debug\Helpers.csprojResolveAssemblyReference.cache
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\obj\Debug\Helpers.csproj.CoreCompileInputs.cache
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\obj\Debug\Helpers.dll
+C:\Users\ming0\OneDrive\Documents\GitHub\CS 4790 .net\OCRC2\Helpers\obj\Debug\Helpers.pdb

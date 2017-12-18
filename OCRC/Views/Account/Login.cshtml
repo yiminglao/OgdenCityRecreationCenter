@@ -1,0 +1,49 @@
+﻿@model OCRC.Models.UserLogin
+@{
+    ViewBag.Title = "Login";
+}
+
+@{
+    Layout = "";
+}
+<head>
+    @Styles.Render("~/Content/bootstrap.min.css")
+    @Styles.Render("~/Content/Site.css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/Login")
+    @Html.Hidden("RedirectTo", Url.Action("Login", "Account"));
+</head>
+@using (Html.BeginForm())
+{
+    
+    @Html.AntiForgeryToken()
+<body>
+    <div class="container">
+        <div class="card card-container">
+            <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+            <p id="profile-name" class="profile-name-card"></p>
+            <form class="form-signin">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required autofocus>
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                <div id="remember" class="checkbox">
+                    <label>
+                        <input type="checkbox" id ="rememberme" name ="rememberme" value="remember-me"> Remember me
+                    </label>
+                    <input class="btn btn-lg btn-primary btn-block btn-signin"  type="submit" id="button" value="Log In">
+                </div>
+            </form><!-- /form -->
+            <ul>
+                <li class="forgot-password">@Html.ActionLink("Forgot the password?", "ForgotPassword", "Account")</li>
+            </ul>
+         @Html.ValidationSummary(true, "Login failed. Check your login details.");
+        </div>
+    </div>
+
+    </body>
+    }
+
+
+
+
+
